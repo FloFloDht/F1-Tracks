@@ -1,4 +1,4 @@
-module FT26
+module F1-Tracks
 
 go 1.25.4
 

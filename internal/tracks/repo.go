@@ -1,7 +1,7 @@
 package tracks
 
 import (
-	"FT26/internal/db"
+	"F1-Tracks/internal/db"
 	"log"
 )
 
