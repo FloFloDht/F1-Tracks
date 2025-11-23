@@ -1,37 +1,31 @@
 package tracks
 
 import (
-	"context"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
-type Handler struct {
-	service Service
+func RegisterRoutes(r *gin.Engine) {
+	r.GET("/tracks", handleGetTracks)
+	r.GET("/tracks/:id", handleGetTrack)
 }
 
-func NewHandler(s Service) *Handler {
-	return &Handler{service: s}
-}
-
-func (h *Handler) GetAll(c *gin.Context) {
-	circuits, err := h.service.GetAll(context.Background())
+func handleGetTracks(c *gin.Context) {
+	tracks, err := GetAllTracks()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, circuits)
+	c.JSON(200, tracks)
 }
 
-func (h *Handler) GetByID(c *gin.Context) {
+func handleGetTrack(c *gin.Context) {
 	id := c.Param("id")
 
-	circuit, err := h.service.GetByID(context.Background(), id)
+	track, err := GetTrackByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Circuit not found"})
+		c.JSON(404, gin.H{"error": "Circuit non trouvé"})
 		return
 	}
 
-	c.JSON(http.StatusOK, circuit)
+	c.JSON(200, track)
 }

@@ -1,23 +1,20 @@
 package main
 
 import (
-	"log"
-
-	"FT26/internal/config"
-	"FT26/internal/mongo"
-	"FT26/internal/http"
+    "FT26/internal/db"
+    "FT26/internal/tracks"
+    "github.com/gin-gonic/gin"
+    "log"
 )
 
 func main() {
-    cfg := config.Load()
+    db.InitSqlite("data/f1.db")
+    db.Migrate()
 
-    mongoClient, err := mongo.NewClient(cfg)
-    if err != nil {
-        log.Fatalf("MongoDB connection error: %v", err)
-    }
+    r := gin.Default()
 
-    router := http.NewRouter(mongoClient, cfg)
+    tracks.RegisterRoutes(r)
 
-    log.Printf("API listening on port %s", cfg.Port)
-    router.Run(":" + cfg.Port)
+    log.Println("API F1 lancée sur :8080")
+    r.Run(":8080")
 }
